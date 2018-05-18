@@ -13,7 +13,37 @@ message = ""
 
 GREETING_MAN = (
     'Hello, brother',
-    'qwe'
+'Здравствуй! ',
+'Драсьте! '
+'Привет! '
+'Доброе утро! '
+'Добрый день! '
+'Добрый вечер! '
+'Доброй ночи! '
+'Доброго времени суток! '
+'Салют! '
+'Здорово!' 
+'Дарова! '
+'Хэлло! '
+'Хай! '
+'Вечер в хату! '
+'Глубокое (глубочайшее) почтение '
+'Горячий привет! '
+'С добрым утром! '
+'Сердечно приветствую Вас! '
+'Сердечно рад Вам '
+'Здра '
+'Прив '
+'Приветики '
+'Превед '
+'Здравки '
+'Доброго здоровьечка ) '
+'HI '
+'Guten Tag '
+'Guten Morgen '
+'Guten Nacht '
+'Bonjour '
+'Hola '
 )
 
 GREETING_WOMAN = (
@@ -75,12 +105,6 @@ def check_out_tarif(values, tarif_val, mes):
         if value > tarif_val:
             message += mes[random.randrange(len(mes))]
             return
-
-
-
-
-
-
 
 #male = input('Enter your male')
 #age = input("Enter your Age")
