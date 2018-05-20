@@ -13,6 +13,14 @@ class Ages(Enum):
     VERY_OLD_PERSON = 4
 
 
+class messengers(Enum):
+    TELEGA = 1;
+    WHATS_APP = 2;
+    VIBER = 3;
+    FACEBOOK_MESSENGER = 4;
+
+
+
 message = ""
 
 GREETING_MAN = (
@@ -189,7 +197,49 @@ d = {
     'Porno': ["Не души свое одиночество - воспользуйся тарифом и  премиум на месяц в Boody твой. "]
 }
 
+TELEGRAM = {
+    "Роскомнадзор мешает жизни??? Подключите тариф и получите лучший VPN от Мегафонпа"
+}
+
+WHATSAPP = {
+    "ffd"
+    "dvgd"
+}
+
+VIBER = {
+    "gfh"
+    ":l"
+}
+
+FACEBOOKMESSENGER = {
+    "dgdg"
+    "dffg"
+    "sdgew"
+}
+
 FAT_TEXT = 'VPN был классным!!!!'
+
+
+
+def get_messenger(messanger):
+    global message
+    if messanger == messengers.TELEGA:
+        message += TELEGRAM[random.randrange(len(TELEGRAM))]
+        return messengers.TELEGA
+    elif messanger == messengers.WHATS_APP:
+        message += WHATSAPP[random.randrange(len(WHATSAPP))]
+        return messengers.WHATS_APP
+    elif messanger == messengers.VIBER:
+        message += VIBER[random.randrange(len(VIBER))]
+        return messengers.VIBER
+    elif messanger == messengers.FACEBOOK_MESSENGER:
+        message += FACEBOOKMESSENGER[random.randrange(len(FACEBOOKMESSENGER))]
+        return messengers.FACEBOOK_MESSENGER
+    else :
+        message += NEUTRAL_MESSAGE[random.randrange(len(NEUTRAL_MESSAGE))]
+
+
+
 
 
 def get_dop_info():
@@ -200,6 +250,7 @@ def get_dop_info():
             index = random.randrange(0, len(d[key]))
             return d[key][index]
     return NEUTRAL_MESSAGE
+
 
 
 def get_age(age, male):
