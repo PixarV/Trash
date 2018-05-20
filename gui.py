@@ -171,6 +171,24 @@ MORE_INTERNET = (
 
 NEUTRAL_MESSAGE = (
     "HAVE a GOOD day "
+    "Мы очень рады, что Вы выбрали нас"
+    "Хорошего дня!"
+    "Благодарим Вас за то, что вы с нами"
+    "Мы делаем все вожможное, чтобы вы наслаждались нашими услугами"
+    "Мы хотим поблагодарить вас за то, что пользуетесь нашими услугами"
+    "Спасибо за вашу поддержку!"
+    "Всего наилучшего"
+    "Желаю Вам радости и счастья!"
+    "Благовдарим Вас от глубины души!"
+    "Хорошего дня/вечера!"
+    "Пусть сбудутся ваши мечты!"
+    "Нажеемся, у вас все хорошо"
+    "С наилучшими пожеланиями, ваш Мегафон"
+    "С любовью, Мегафон"
+    "Мы очень признательны вам за добрые советы"
+    "Спасибо за Ваше внимание!"
+    "Мы Вам так благодарны"
+    "We are so grateful to you!"
 )
 
 TARIF = (
@@ -217,6 +235,9 @@ FACEBOOKMESSENGER = {
 FAT_TEXT = 'VPN был классным!!!!'
 
 
+def set_dict(key, new_value):
+    d[key].append(new_value)
+
 
 def get_messenger(messanger):
     global message
@@ -236,9 +257,6 @@ def get_messenger(messanger):
         message += NEUTRAL_MESSAGE[random.randrange(len(NEUTRAL_MESSAGE))]
 
 
-
-
-
 def get_dop_info():
     global FAT_TEXT
     for key in d.keys():
@@ -247,7 +265,6 @@ def get_dop_info():
             index = random.randrange(0, len(d[key]))
             return d[key][index]
     return NEUTRAL_MESSAGE
-
 
 
 def get_age(age, male):
@@ -291,15 +308,12 @@ def parse_attr(calls, SMS, Internet, tarif):
         message += NEUTRAL_MESSAGE[random.randrange(len(NEUTRAL_MESSAGE))]
 
 
-
 def check_out_tarif(values, tarif_val, inc):
     global message
     for value in values:
         if value > tarif_val:
             return inc
     return 0
-
-
 
 
 class Example(QtWidgets.QWidget):
@@ -393,5 +407,5 @@ class Example(QtWidgets.QWidget):
 	
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    ex = Example(dict(),QtWidgets.QTextEdit(), QtWidgets.QComboBox(), [], [], [], [])
+    ex = Example(dict(), QtWidgets.QTextEdit(), QtWidgets.QComboBox(), [], [], [], [])
     sys.exit(app.exec_())
