@@ -3,6 +3,9 @@ import random
 from PyQt5 import QtWidgets
 from enum import Enum
 
+from PyQt5.QtCore import Qt
+
+
 class Ages(Enum):
     STUDENT = 1,
     MIDDLE_PERSON = 2,
@@ -171,7 +174,7 @@ TARIF = (
     ('Включайся! Говори', 700, 5),
     ('Включайся! Смотри', 800, 20),
     ('Включайся! Смотри+', 1000, 25),
-    ('Включайся! Пиши', 200,5,10),
+    ('Включайся! Пиши', 200, 5, 10),
     ('Включайся! Премиум', 3000, 30, 0)
 )
 TARIF_SNG = (
@@ -180,13 +183,14 @@ TARIF_SNG = (
 )
 
 d = {
-    'VPN' : ["Большой брат следит за тобой..."],
+    'VPN': ["Большой брат следит за тобой..."],
     'SMS': ["ПС, парень - не хочешь немного халявы?"],
-    'Netflix' : ["Кайло Рен убьет хана Соло. Не хочешь спойлеров"],
-    'Porno' : ["Не души свое одиночество - воспользуйся тарифом и  премиум на месяц в Boody твой. "]
+    'Netflix': ["Кайло Рен убьет хана Соло. Не хочешь спойлеров"],
+    'Porno': ["Не души свое одиночество - воспользуйся тарифом и  премиум на месяц в Boody твой. "]
 }
 
 FAT_TEXT = 'VPN был классным!!!!'
+
 
 def get_dop_info():
     global FAT_TEXT
@@ -200,18 +204,18 @@ def get_dop_info():
 
 def get_age(age, male):
     global message
-    if (17>=age):
-       message += 'Слишком молодой, чтобы что-либо получать' 
-    elif (18<=age<=27):
+    if (17 >= age):
+        message += 'Слишком молодой, чтобы что-либо получать'
+    elif (18 <= age <= 27):
         if male == 'M':
             message += GREETING_MAN[random.randrange(len(GREETING_MAN))]
         else:
             message += GREETING_WOMAN[random.randrange(len(GREETING_WOMAN))]
         return Ages.STUDENT
-    elif (27<age<=45):
+    elif (27 < age <= 45):
         message += GREETIN_MIDDLE[random.randrange(len(GREETIN_MIDDLE))]
         return Ages.MIDDLE_PERSON
-    elif (45<age<=60):
+    elif (45 < age <= 60):
         message += GREETING_VERY_OLD[random.randrange(len(GREETING_VERY_OLD))]
         return Ages.OLD_PERSON
     else:
@@ -220,7 +224,8 @@ def get_age(age, male):
 
 def parse_attr(calls, SMS, Internet, tarif):
     global message
-    SS = check_out_tarif(calls, tarif[0], 1) + check_out_tarif(SMS, tarif[1], 3) + check_out_tarif(Internet, tarif[2], 5)
+    SS = check_out_tarif(calls, tarif[0], 1) + check_out_tarif(SMS, tarif[1], 3) + check_out_tarif(Internet, tarif[2],
+                                                                                                   5)
     if SS == 1:
         message += MORE_CALLS[random.randrange(len(MORE_CALLS))]
     elif SS == 3:
@@ -239,7 +244,6 @@ def parse_attr(calls, SMS, Internet, tarif):
         message += NEUTRAL_MESSAGE[random.randrange(len(NEUTRAL_MESSAGE))]
 
 
-
 def check_out_tarif(values, tarif_val, inc):
     global message
     for value in values:
@@ -247,8 +251,12 @@ def check_out_tarif(values, tarif_val, inc):
             return inc
     return 0
 
-
-
+#   Мессенджеров много (>30% - мессенджеры) иначе SMS или Push уведомления  - заголовки.
+#   анализ отказа
+#   ЛК и мобильное - всегда, если есть мобильное приложение - Push уведомления (использование доп инфы)
+#   ЛК и моб - сравнение тарифов отдельным уведомлением. Не нравится статистика: смотри тут и тут
+#   взрослым людям - предложение для близких
+#   студентам - предложение с похожей стоимостью
 
 class Example(QtWidgets.QWidget):
     def __init__(self, lines, text, comboBox, calls, sms, inet, tarif):
@@ -256,62 +264,93 @@ class Example(QtWidgets.QWidget):
         self.lines = lines
         self.text = text
         self.comboBox = comboBox
+        self.genderBox = QtWidgets.QComboBox()
+        self.slider_labels = {}
         self.calls = calls
         self.sms = sms
         self.inet = inet
-        
-
         self.tarif = tarif
+        self.usual = QtWidgets.QRadioButton('usual')
+        self.sng = QtWidgets.QRadioButton('sng')
         self.window()
 
     def window(self):
-       self.setGeometry(100,50,500,100)
-       form = QtWidgets.QFormLayout()
-       self.text.setReadOnly(True)
-       
-       arr = ['Gender', 'Age', 'Calls', 'SMS', 'Internet', 'Tarif']
-       for i in range(len(arr)):
-           line = QtWidgets.QLineEdit()
-           self.lines[arr[i]] = line
-           form.addRow(arr[i], line) 
+        self.setGeometry(100, 50, 600, 100)
+        form = QtWidgets.QFormLayout()
+        self.text.setReadOnly(True)
+        main_container = QtWidgets.QHBoxLayout()
 
-       form.addRow("result", self.text)
-       self.comboBox = QtWidgets.QComboBox()
-       
-       buttons = QtWidgets.QHBoxLayout()
-       self.usual = QtWidgets.QRadioButton('usual')
-       self.usual.setChecked(True)
-       self.sng = QtWidgets.QRadioButton('sng')
-       self.usual.clicked.connect(self.tarif_radio_listener)
-       self.sng.clicked.connect(self.tarif_radio_listener)
-       buttons.addWidget(self.usual)
-       buttons.addWidget(self.sng)
-       buttonGroup = QtWidgets.QGroupBox()
-       buttonGroup.setLayout(buttons)
+        gender_age = QtWidgets.QHBoxLayout()
+        self.genderBox.addItem("M")
+        self.genderBox.addItem("F")
+        gender_age.addWidget(self.genderBox)
+        gender_age.addLayout(self.create_slider_box('age', '21', 14, 100, 21))
+        form.addRow("Gender & age", gender_age)
 
-       for tarif in TARIF:
-           self.comboBox.addItem(tarif[0]) 
+        for tarif in TARIF:
+            self.comboBox.addItem(tarif[0])
+        self.comboBox.activated.connect(lambda: self.choose_tarif_listener())
+        form.addRow('Plan', self.comboBox)
 
-       okButton = QtWidgets.QPushButton("OK")
-       okButton.clicked.connect(self.listener)
-    
-       vbox = QtWidgets.QVBoxLayout()
-       vbox.addLayout(form)
-       vbox.addWidget(self.comboBox)
-       vbox.addWidget(buttonGroup)
-       vbox.addWidget(okButton)
-       self.setLayout(vbox)
-       self.show()
-    
+        arr = ['Calls', 'SMS', 'Internet', 'Tarif']
+        for i in range(len(arr)):
+            line = QtWidgets.QLineEdit()
+            # line.setPlaceholderText('tarif: %s' % str(self.get_real_tarif()))
+            self.lines[arr[i]] = line
+            form.addRow(arr[i], line)
+
+        form.addRow('Messengers', self.create_slider_box('messenger', '50', 0, 100, 50))
+        form.addRow('Profile', self.create_slider_box('profile', '50', 0, 100, 50))
+        form.addRow('???', self.create_slider_box('???', '50', 0, 100, 50))
+
+        buttons = QtWidgets.QHBoxLayout()
+        self.usual.setChecked(True)
+        self.usual.clicked.connect(self.tarif_radio_listener)
+        self.sng.clicked.connect(self.tarif_radio_listener)
+        buttons.addWidget(self.usual)
+        buttons.addWidget(self.sng)
+        buttonGroup = QtWidgets.QGroupBox()
+        buttonGroup.setLayout(buttons)
+        form.addRow('Location', buttonGroup)
+
+        self.comboBox = QtWidgets.QComboBox()
+        self.comboBox.addItem("Выберите тариф:")
+
+
+
+        form.addRow("result", self.text)
+
+        okButton = QtWidgets.QPushButton("OK")
+        okButton.clicked.connect(self.listener)
+
+        vbox_right = QtWidgets.QVBoxLayout()
+        vbox_right.addWidget(QtWidgets.QTextEdit())
+        vbox_right.addWidget(QtWidgets.QTextEdit())
+        vbox_right.addWidget(QtWidgets.QTextEdit())
+
+        vbox_left = QtWidgets.QVBoxLayout()
+        vbox_left.addLayout(form)
+        vbox_left.addWidget(okButton)
+
+        main_container.addLayout(vbox_left)
+        main_container.addLayout(vbox_right)
+        self.setLayout(main_container)
+        self.show()
+
     def listener(self):
         global message
-        age = self.lines['Age'].text()
-        gender = self.lines['Gender'].text()
+        age = self.slider_labels['age'].text()
+        gender = self.genderBox.itemText(self.genderBox.currentIndex())
         calls = self.lines['Calls'].text().split(',')
         sms = self.lines['SMS'].text().split(',')
         inet = self.lines['Internet'].text().split(',')
         tarif = self.lines['Tarif'].text().split(',')
-        
+        age_format = get_age(int(age), gender)
+        parse_attr(calls, sms, inet, tarif)
+        self.text.setText(get_dop_info() + '\n' + message)
+        message = ''
+
+    def get_real_tarif(self):
         real_tarif_str = str(self.comboBox.itemText(self.comboBox.currentIndex()))
         real_tarif = tuple()
         for t in TARIF:
@@ -320,26 +359,40 @@ class Example(QtWidgets.QWidget):
         for t in TARIF_SNG:
             if t[0] == real_tarif_str:
                 real_tarif = t
+        return real_tarif
 
-        print(str(real_tarif))
-
-        age_format = get_age(int(age), gender)
-        parse_attr(calls, sms, inet, tarif)
-        self.text.setText(get_dop_info() + '\n' + message)
-        message = ''
-    
     def tarif_radio_listener(self):
-        if self.usual.isChecked():
-            self.comboBox.clear()
-            for tarif in TARIF:
-                self.comboBox.addItem(tarif[0])
-        else:
+        self.comboBox.clear()
+        for tarif in TARIF:
+            self.comboBox.addItem(tarif[0])
+        if self.sng.isChecked():
             for tarif in TARIF_SNG:
                 self.comboBox.addItem(tarif[0])
 
-    
-	
+    def choose_tarif_listener(self):
+        tarif = self.get_real_tarif();
+        self.lines['Calls'].setPlaceholderText('tarif: %s min' % str(tarif[1]))
+        self.lines['Internet'].setPlaceholderText('tarif: %s Gb' % str(tarif[2]))
+        self.lines['SMS'].setPlaceholderText('tarif: %s sms' % str(tarif[3]) if len(tarif) == 4 else '--')
+
+    def create_slider_box(self, type_label, label_text, min, max, now):
+        box = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel(label_text)
+        self.slider_labels[type_label] = label
+        slider = QtWidgets.QSlider(Qt.Horizontal)
+        slider.setMinimum(min)
+        slider.setMaximum(max)
+        slider.setValue(now)
+        slider.valueChanged.connect(lambda: self.slider_value_change(label, slider))
+        box.addWidget(label)
+        box.addWidget(slider)
+        return box
+
+    def slider_value_change(self, label, slider):
+        label.setText(str(slider.value()))
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    ex = Example(dict(),QtWidgets.QTextEdit(), QtWidgets.QComboBox(), [], [], [], [])
+    ex = Example(dict(), QtWidgets.QTextEdit(), QtWidgets.QComboBox(), [], [], [], [])
     sys.exit(app.exec_())
